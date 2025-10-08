@@ -1,0 +1,4 @@
+Telefónica;4,32€
+Banco Santander;5,65€
+Banco Sabadell;4,45€
+Caixabank;6,76€

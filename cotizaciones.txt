@@ -1,0 +1,20 @@
+TEF
+Telefónica
+4,32€
+-0,015€
+0,35%
+SAN
+Banco Santander
+5,65€
+-0,134€
+0,44%
+SAB
+Banco Sabadell
+4,45€
+-0,093€
+0,24%
+CAX
+Caixabank
+6,76€
+-0,22€
+0,23%
