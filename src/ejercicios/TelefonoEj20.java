@@ -14,7 +14,26 @@ public class TelefonoEj20 implements Serializable{
 	private String nombre;
 	private String numero;
 	
+	//En esta clase no hace falta constructor vacío 
+	//Usamos serializable lo que significa que los objetos se van a guardar y leer desde un fichero usando flujos de objetos
 	
+	//Cuando java deserializa, es decir, lee un objeton desde un fichero
+	//NO LLAMA al constructor parametrizado porque crea un objeto vacío en memoria y luego le asigna los valores de los atributos directamente
+	
+	
+	//Funciona sin el constructor vacío porque no usa el mecanismo de serialización directamente
+	
+	public TelefonoEj20() {
+		
+	}
+	
+	//Sin embargo es una buena práctica, aún sabiendo todo ello lo pondremos
+	//Mantenemos compatibilidad futura con librerías o Frameworks y seguimos el estándar JavaBeans
+	
+	public TelefonoEj20(String nombre,String numero) {
+		this.nombre=nombre;
+		this.numero=numero;
+	}
 
 	public String getNombre() {
 		return nombre;
@@ -32,10 +51,7 @@ public class TelefonoEj20 implements Serializable{
 		this.numero = numero;
 	}
 
-	public TelefonoEj20(String nombre,String numero) {
-		this.nombre=nombre;
-		this.numero=numero;
-	}
+	
 	@Override
 	public String toString() {
 		return "TelefonoEj20 [nombre=" + nombre + ", numero=" + numero + "]";

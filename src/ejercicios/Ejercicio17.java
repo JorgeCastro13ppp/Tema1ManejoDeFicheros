@@ -26,11 +26,17 @@ public class Ejercicio17 {
 			return;
 		}
 		
+		//En java no se puede modificar una línea concreta directamente
+		//Los ficheros se leen secuencialmente línea a línea
 		List <String> lineas = new ArrayList<>();
+		//Permite añadir líneas dinámicamente sin saber cuantas hay
+		//Permite acceder a las líneas fácilmente (lineas.set)
+		//Se recorre fácil con un for
 		
 		//Leer todas las líneas del fichero
 		try(BufferedReader br = new BufferedReader(new FileReader(fichero))){
 			String linea;
+			// Sirve para que el usuario sepa qué número de línea corresponde a cada texto.
 			int contador = 1;
 			System.out.println("Contenido del fichero:");
 			
@@ -63,9 +69,14 @@ public class Ejercicio17 {
 		
 		//Sobreescribir el nuevo contenido
 		// "false" sobreescribe, borra el contenido anterior y escribe el nuevo desde cero
+		// Overwrite mode: borra el contenido anterior y empieza desde cero
 		try(PrintWriter pw = new PrintWriter(new FileWriter(fichero,false))){
+			//Utilizamos PrintWriter porque permite escribir fácilmente con println
+			//Se encarga de convertir cualquier tipo de dato a texto
+			//Es más comodo que el BufferedReader porque estamos escribiendo líneas completas
 			for(String l : lineas) {
 				pw.println(l);
+				// escribe cada línea en el fichero, y automáticamente añade un salto de línea después.
 			}
 			
 		}catch(IOException i) {
