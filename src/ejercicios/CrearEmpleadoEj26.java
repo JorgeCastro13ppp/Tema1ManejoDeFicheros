@@ -9,10 +9,12 @@ public class CrearEmpleadoEj26 {
 	public static void main(String[] args) {
 		
 		EmpleadoEj26 empleadoCrear = new EmpleadoEj26("44411818Z","Jorge Leonardo",2100.00);
+		EmpleadoEj26 empleadoCrear2 = new EmpleadoEj26("44411818Z"," Leonardo",100.00);
 		
 		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("empleado.bin"))
 				){
 			oos.writeObject(empleadoCrear);
+			oos.writeObject(empleadoCrear2);
 			System.out.println("Empleado guardado correctamente en 'empleado.bin'");
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
