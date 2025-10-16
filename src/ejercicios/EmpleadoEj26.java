@@ -1,6 +1,7 @@
 package ejercicios;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class EmpleadoEj26 implements Serializable{
 	
@@ -56,6 +57,32 @@ public class EmpleadoEj26 implements Serializable{
 	public String toString() {
 		return "EmpleadoEj26 [dni=" + dni + ", nombre=" + nombre + ", sueldo=" + sueldo + "]";
 	}
+	
+	//Ejercicio 28
+	//Es fundamental sobreescribir equals() y hashCode() 
+	//Así Set funcionará correctamente y detectará duplicados por DNI
+	//Lo generamos con source, o manualmente de 0, igualmente debemos modificarlo si utilizamos el source
+	//Estos dos métodos son correctos pero está mejor si controlamos las mayúsculas y minúsculas para evitar falsos duplicados
+	@Override
+	public int hashCode() {
+		//return Objects.hash(dni);
+		return dni.toLowerCase().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EmpleadoEj26 other = (EmpleadoEj26) obj;
+		//return Objects.equals(dni, other.dni);
+		return dni.equalsIgnoreCase(other.dni);
+	}
+	
+	
 	
 	
 	
