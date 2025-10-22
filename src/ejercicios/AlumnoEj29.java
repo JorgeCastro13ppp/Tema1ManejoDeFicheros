@@ -15,7 +15,6 @@ public class AlumnoEj29 implements Serializable{
 	}
 
 	public AlumnoEj29(int expediente, String nombre, double nota) {
-		super();
 		this.expediente = expediente;
 		this.nombre = nombre;
 		//this.nota = nota;
@@ -49,7 +48,7 @@ public class AlumnoEj29 implements Serializable{
 	@Override
 	public String toString() {
 		String notaTexto = (nota == -1) ? "Sin nota" : String.format("%.2f", nota);
-		return "AlumnoEj29 [expediente=" + expediente + ", nombre=" + nombre + ", nota=" + nota + "]";
+		return "AlumnoEj29 [expediente=" + expediente + ", nombre=" + nombre + ", nota=" + notaTexto + "]";
 	}
 	
 	//Relizamos el hashCode y el equals basados en el expediente porque solo hay uno por alumno
