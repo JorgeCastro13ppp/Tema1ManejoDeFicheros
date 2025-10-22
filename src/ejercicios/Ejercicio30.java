@@ -19,6 +19,16 @@ public class Ejercicio30 {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner (System.in);
+		//En el ejercicio 29 teníamos una colección de alumnos representada con Set, estto garantizaba que no hubiera duplicados
+		//pero si queriamos buscar actualizar o borrar un alumno teníamos que recorrer toda la colección uno por uno con un bucle
+		//esto es correcto pero poco eficiente
+		
+		//El Map está pensado justamente para asociar una clave única(expediente) con un valor (alumno)
+		//Cada entrada sería algo como
+		//12345 → AlumnoEj29{expediente=12345, nombre="Ana", nota=8.5}
+		//67890 → AlumnoEj29{expediente=67890, nombre="Luis", nota=-1}
+		//Esto permite hacer operaciones mucho más directas y más rápidas. Evitamos escribir código repetitivo de búsqueda manual
+		//En este ejercicio el expediente actúa como identificador único así que lo más lógico limpio y eficiente es usar Map
 		Map<Integer,AlumnoEj29> alumnos = leerFichero();
 		int opcion;
 		
@@ -68,19 +78,27 @@ public class Ejercicio30 {
 	}
 	
 	private static Map<Integer,AlumnoEj29> leerFichero(){
-		File ficheroLeer = new File(FICHERO);
+		//Antes creabamos un conjunto vacío si el fichero existía lo leíamos y hacíamos un casting a Set<AlumnoEj29>
+		//Si no existía devolvíamos el conjunto vacío
 		//Set<AlumnoEj29> alumnosLeer= new LinkedHashSet<>(); 
 		
-		if(!ficheroLeer.exists()) {
+		//Ahora creamos un objeto File con el nombre del fichero
+		File ficheroLeer = new File(FICHERO);//Sirve para comprobar si existe antes de intentar abrirlo
+		if(!ficheroLeer.exists()) {//Si el fichero no existe el programa devuelve un LinkedHashMap vacío
 			//return alumnosLeer;
-			return new LinkedHashMap<>();
+			return new LinkedHashMap<>();//Antes devolvíamos un LinkedHasSet vacío, LinkedHashMap mantiene el orden de insercíon igual que el otro lo hacía
 		}
 		
 		try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ficheroLeer))){
+			//antes asumíamos que el fichero siempre contenía un Set<AlumnoEj29> así que hacíamos directamente el casting
+			
 			//alumnosLeer = (Set <AlumnoEj29>)  ois.readObject();
+			
+			//Ahora el fichero guarda un Map<Integer,AlumnoEj29> pero como por seguridad no puedes saber 100% qué hay guardado lees un Object genérico y luego comprobamos
 			Object obj = ois.readObject();
-			if(obj instanceof Map) {
-				return (Map<Integer,AlumnoEj29>) obj;
+			if(obj instanceof Map) { //Esto garantiza que el objeto leído sea realmente un Map antes de hacer el casting
+				return (Map<Integer,AlumnoEj29>) obj; //Si lo es, devolvemos
+				//Este enfoque es más seguro y flexible que el anteerior
 			}
 		}catch(IOException | ClassNotFoundException e) {
 			System.out.println("Error al leer el fichero: "+e.getMessage());
@@ -88,20 +106,23 @@ public class Ejercicio30 {
 		}
 		
 		//return alumnosLeer;
-		return new LinkedHashMap<>();
+		return new LinkedHashMap<>();//Si algo falla devolvemos un LinkedHashMap vacío para evitar errores NullPointerException
 	}
 	
 	private static void guardarFichero(Map<Integer,AlumnoEj29>alumnos) {
-		
+		//Este método es muy similar al de la anterior clase
 		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FICHERO))) {
-			oos.writeObject(alumnos);
+			oos.writeObject(alumnos); //Aquí se escribe el mapa completo (Map<Integer,AlumnoEj29>) en ficher binario
+			//Todas las propiedades del objeto deben ser serializables (en este caso int,String, double ya lo son)
+			//Este método guarda toda la estructura de datos (claves y valores) en el fichero, al leerlo más tarde con readObject(), recuperamos exactamente el mismo mapa con todos los alumnos
 		}catch(IOException e) {
 			System.out.println("Error al guardar el fichero: "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
-	private static void anadirAlumno(Scanner sc, Map<Integer,AlumnoEj29>alumnos) {
+	private static void anadirAlumno(Scanner sc, Map<Integer,AlumnoEj29>alumnos) { //Modificamos los parámetros de entrada
+		//Se solicita al usuario que introduzca el expoediente
 		System.out.println("Introduce el número del expediente a añadir:");
 		int expedienteAnadir= sc.nextInt();
 		sc.nextLine();
@@ -113,17 +134,24 @@ public class Ejercicio30 {
 			}
 		} */
 		
+		//Comprobamos duplicados se comprueba si el mapa ya contiene ese expediente como clave
 		if(alumnos.containsKey(expedienteAnadir)) {
-			System.out.println("Ya existe un alumno con ese expediente.");
-			return;
-		}
+			System.out.println("Ya existe un alumno con ese expediente."); //Si ya existe, muestra un mensaje y sale del método con return
+			return;//En el ejercicio 29 esta comprobación se hacía recorriendo el Set con un for, porque no había claves únicas
+		}//Con Map es mucho más eficiente
 		
+		//Se pide eln nombre del nuevo alumno y se guarda en una variable
 		System.out.println("Introduce el nombre del alumno a añadir:");
 		String nombreAlumnoAnadir = sc.nextLine();
 		
 		//alumnos.add(new AlumnoEj29(expedienteAnadir,nombreAlumnoAnadir,-1));
+		//Antes se usaba porque era un Set, que no necesita clave; en Map usamos .put() para asociar la clave con el valor
+ 		
+		//Añadimos alumno al mapa
+		//Se crea un objeto AlumnoEj29 con el epediente nombre y nota inicial, que indica "sin nota asignada"
+		//Luego se guarda enb el mapa con .put(clave,valor), la clave es el expediente y el valor el objeto AlumnoEj29
 		alumnos.put(expedienteAnadir, new AlumnoEj29(expedienteAnadir,nombreAlumnoAnadir,-1));
-		System.out.println("Alumno añadido correctamente");
+		System.out.println("Alumno añadido correctamente");//Aquí informamos al usuario que el alumno se ha añadido con éxito
 		
 	}
 	

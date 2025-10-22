@@ -171,30 +171,38 @@ public class Ejercicio29 {
 	}
 	
 	private static void ponerNota(Scanner sc,Set<AlumnoEj29>alumnos) {
+		//Pedimos el expediente por teclado para apuntar hacia un alumno en concreto
 		System.out.println("Introduce el expediente del alumno:");
 		int expedienteNota = sc.nextInt();
 		sc.nextLine();
 		
+		//Una vez hecho esto buscamos el alumno en el conjunto
 		for(AlumnoEj29 a:alumnos) {
-			if(a.getExpediente() == expedienteNota) {
-				System.out.println("Introduce la nota:");
-				String notaStr = sc.nextLine().replace(",", ".");
+			//Recorremos el Set alumnos elemento por elemento buscando el expediente igual al solicitado
+			if(a.getExpediente() == expedienteNota) { //Cuando lo encontramos entramos en el bloque donde pedimos la nota
+				System.out.println("Introduce la nota:");//Pedimos la nota
+				String notaStr = sc.nextLine().replace(",", ".");//Reemplazamos la coma y el punto para evitar errores y aceptar formatos
 				
 				try {
+					//Aquí parseamos la nota de String a double
 					double notaAnadir = Double.parseDouble(notaStr);
+					//Comprobamos que la nota está en el rango válido
 					if(notaAnadir<0||notaAnadir>10) {
 						System.out.println("La nota debe estar entre 0 y 10.");
-						return;
+						return; // Si no lo está informamos aal usuario y salimos con return sin modificar nada
 					}
-					a.setNota(notaAnadir);
-					System.out.println("Nota actualizada correctamente.");
+					a.setNota(notaAnadir); //Si todo está correcto llamamos al setNota, esto modifica el objeto AlumnoEj29 directamente dentro del Set
+					//Es importante que equals() y hashCode() estén definidos en base al expediente (en la clase)
+					//Modificar la nota no cambia la entidad del objeto en el Set por lo que no afecta a la integridad de este
+					System.out.println("Nota actualizada correctamente."); 
 				}catch(NumberFormatException e) {
 					System.out.println("Formato de nota inválido. Usa 7,7 o 7.7 (ej)");
 				}
 				return;
 			}
 		}
-		System.out.println("No se encontró ningún alumno con ese expediente.");
+		System.out.println("No se encontró ningún alumno con ese expediente.");//Si recorremos todo el Set y no hacemos return dentro del if llegamos aquí
+		//Y mostramos que no existe tal alumno con ese expediente
 	}
 	
 	private static void mostrarEstadisticas(Set<AlumnoEj29>alumnos) {
@@ -211,11 +219,15 @@ public class Ejercicio29 {
 		int sumaNotas=0;//La suma acumulada de todas las notas válidas para cacular la media
 		int alumnosConNota=0;//Cuantos alumnos tienen nota asignada (No -1)
 		
+		//Usar estas variables separadas permite que la estadística ignore los alumnos sin nota
+		
+		//Ahora usamor un bucle for-each para iterar todos los alumnos en el Set	
 		for (AlumnoEj29 a: alumnos) {
+			//Solo se consideran alumnos con nota asignada
 			if(a.getNota()!= -1) {
-				alumnosConNota++;
-				sumaNotas += a.getNota();
-				if(a.getNota()<5) {
+				alumnosConNota++; //Se incrementa el contador de alumnos con nota
+				sumaNotas += a.getNota(); //Acumulamos la nota para calcular la media después
+				if(a.getNota()<5) { //Por último clasificamos en  suspensos y aprobados según sean mayores o menores que 5
 					suspensos++;
 				}else {
 					aprobados++;
@@ -223,31 +235,52 @@ public class Ejercicio29 {
 			}
 		}
 		
+		//Ahora calculamos la  media usando el operador ternario "? :" para evitar división por cero si no hay alumnos con nota
+		//La media se calcula como la suma de notas dividido por el número de alumnos con nota
 		double media = (alumnosConNota>0)?sumaNotas/alumnosConNota:0.0;
+					//Si hay algún alumno |Se realiza la media    |Sino la media será 0.0
+					//con nota	
+		//Aquí sumaNotas es int, si quisieramos precisión decimal deberíamos conveertirlo a double
+		//double media = (alumnosConNota>0)?(double)sumaNotas/alumnosConNota:0.0;
 		
-		System.out.println("\n📊 ESTADÍSTICAS:");
+		
+		//Por último imprimimos el resultado
+		System.out.println("\n ESTADÍSTICAS:");
         System.out.println("Suspensos: " + suspensos);
         System.out.println("Aprobados: " + aprobados);
-        System.out.printf("Nota media: %.2f%n", media);
+        System.out.printf("Nota media: %.2f%n", media); // "%.2f%n imprime la media con 2 decimales, más legible
+        
+        //Cabe destacar que iteramos sobre un Set sin necesidad de índice, aprovechando la estructura LinkedHashSet para mantener el orden de inserción
 	}
 	
 	private static void borrarAlumno(Scanner sc, Set<AlumnoEj29>alumnos) {
+		//Pedimos al usuario el expediente del alumno a eliminar
 		System.out.println("Introduce el expediente del alumno a borrar:");
 		int expedienteBorrar = sc.nextInt();
 		sc.nextLine();
-		
+		//Creamos el iterador sobre el conjunto alumnos
+		//Esto es necesario porque no puedes eliminar directamente un elemento de un Set mientras lo recorres con un bucle for-each
+		//Eso lanzaría una excepción ConcurrentModificationException
+		//El iterador sí permite eliminar de forma segura el elemento actual mediante it.remove()
 		Iterator<AlumnoEj29> it = alumnos.iterator();
-		
-		while(it.hasNext()) {
-			AlumnoEj29 ab = it.next();
+		//Recorremos el conjunto con while
+		while(it.hasNext()) {//Recorremos todos los alumnos del conjunto mientras haya elementos
+			AlumnoEj29 ab = it.next(); //Devuelve el siguiente objeto AlumnoEj29
+			//En cada iteraciçon se compara el expediente del alumno actual con el número introducido por el usuario
+			//Si coincide entremos en el bloque if
 			if(ab.getExpediente()==expedienteBorrar) {
-				it.remove();
-				System.out.println("Alumo borrado correctamente.");
-				return;
+				//it.remove() elimina el último elemento devuelto por it.next() del Set de forma segura
+				it.remove();//Esto elimina definitivamente el alumno de la colección
+				//Si no usaramos el iterador y tratasemos de hacer alumnos.remove(ab) dentro del bucle, daría error
+				System.out.println("Alumo borrado correctamente.");//Si todo sale bien informamos al usuario
+				return;//salimos del método inmediatamente para no seguir buscando ni imprimir mensajes adicionales
 			}
 		}
-		
+		//Si no se encontró el expediente se muestra este mensaje
+		//Esto quiere decir que el bucle termina sin haber hecho return, no se encontró ningún alumno con el expediente indicado
 		System.out.println("No se encontró ningún alumno con ese expediente.");
+		
+		//Cabe destacar que podemos usar un remove.if que es más moderno corto y legible
 		
 	}
 
