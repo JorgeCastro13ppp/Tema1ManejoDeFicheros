@@ -156,20 +156,25 @@ public class Ejercicio30 {
 	}
 	
 	private static void mostrarAlumnos(Map<Integer,AlumnoEj29>alumnos) {
+		//Verificamos si el mapa no tiene datos
 		if(alumnos.isEmpty()) {
-			System.out.println("No hay alumnos registrados.");
-		}else {
+			System.out.println("No hay alumnos registrados."); //Si no tiene datos devolvemos un mensaje que dice que no tiene 
+		}else {//Si el mapa no está vacío se imprime un encabezado decorativo
 			System.out.println("-----LISTA DE ALUMNOS------");
+			
 			/*for(AlumnoEj29 a:alumnos) {
 				System.out.println(a);
 			}*/
+			
+			//ahora se usa .values() que devuelve una colección con todos los valores del mapa SIN LAS CLAVES
 			for(AlumnoEj29 a:alumnos.values()) {
-				System.out.println(a);
+				System.out.println(a);//Cada elemento 'a' es un objeto AlumnoEj29
 			}
 		}
 	}
 	
 	private static void ponerNota(Scanner sc,Map<Integer,AlumnoEj29>alumnos) {
+		//Este método es un ejemplo muy claro de como usar un Map simplifica la búsqueda y actualización de datos
 		System.out.println("Introduce el expediente del alumno:");
 		int expedienteNota = sc.nextInt();
 		sc.nextLine();
@@ -195,29 +200,38 @@ public class Ejercicio30 {
 		}
 		System.out.println("No se encontró ningún alumno con ese expediente.");*/
 		
+		//Antes se necesitaba recorrer todo el set con un bucle for para buscar el alumno por expediente
+		//Ahora con Map se puede acceder directamente al alumno usando su "key" (expedienteNota) en O(1). Búsqueda inmediata
+		
 		AlumnoEj29 alumnoNota = alumnos.get(expedienteNota);
-		if(alumnoNota==null) {
-			System.out.println("No existe ningún alumno con ese expediente.");
-			return;
+		if(alumnoNota==null) {//Si la clave no existe el método get devuelve null
+			System.out.println("No existe ningún alumno con ese expediente."); //Se muestra mensaje de error
+			return;//Se interrumpe la ejecución del método con el return 
 		}
 		System.out.println("Introduce la nota: ");
-		String notaStr = sc.nextLine().replace(',', '.');
-		double notaParseada= Double.parseDouble(notaStr);
+		String notaStr = sc.nextLine().replace(',', '.');//Se reemplazan las comas por puntos como siempre
+		double notaParseada= Double.parseDouble(notaStr);//Convertimos el texto introducido a tipo double
+		//Si el usuario escribe letras se lanzará una NumberFormatException, podríamos capturarlo con try-catch
 		
+		//Si todo es correcto se llama al método setNota() del objeto AlumnoEj29 para actualizar la nota
 		alumnoNota.setNota(notaParseada);
 		System.out.println("Nota actualizada correctamente.");
 	}
 	
 	private static void mostrarEstadisticas(Map<Integer,AlumnoEj29>alumnos) {
+		//Si el mapa está vacío devuelve true
 		if(alumnos.isEmpty()) {
-			System.out.println("No hay alumnos registrados.");
-			return;
+			System.out.println("No hay alumnos registrados.");//Mpstramos mensaje
+			return;//Se interrumpe la ejecución
 		}
 		
-		int suspensos =0;
-		int aprobados=0;
-		int sumaNotas=0;
-		int alumnosConNota=0;
+		//Declaramos variables para acumular datos
+		
+		int suspensos =0; //Nota <5
+		int aprobados=0;//Nota >5
+		int sumaNotas=0;//Suma total de todas las notas para calcular la media, debería ser double para mejorar precisión
+		int alumnosConNota=0;//Nº de alumnos que tienen una nota válida, distinta de -1
+		
 		
 		/*for (AlumnoEj29 a: alumnos) {
 			if(a.getNota()!= -1) {
@@ -230,10 +244,14 @@ public class Ejercicio30 {
 				}
 			}
 		}*/
+		
+		//De nuevo, el .values() devuelve una colección con todos los valores del mapa, los objetos AlumnoEj29
+		//Recorremos todos los alumnos sin preocuparnos por las claves
 		for (AlumnoEj29 a: alumnos.values()) {
+			//Primero se excluyen a los alumnos sin nota asignada para los cálculos estadísticos
 			if(a.getNota()!= -1) {
-				alumnosConNota++;
-				sumaNotas += a.getNota();
+				alumnosConNota++;//Se incrementa el contador de alumnos con nota
+				sumaNotas += a.getNota();//Se añade su nota a la suma total para calcular la media 
 				if(a.getNota()<5) {
 					suspensos++;
 				}else {
@@ -241,7 +259,8 @@ public class Ejercicio30 {
 				}
 			}
 		}
-		
+		//Si hay alumnos con Nota >0, calcula la media, 
+		//Sino hay ninguno evita la división entre 0 y establece 0.0
 		double media = (alumnosConNota>0)?sumaNotas/alumnosConNota:0.0;
 		
 		System.out.println("\n📊 ESTADÍSTICAS:");
@@ -269,7 +288,10 @@ public class Ejercicio30 {
 		
 		System.out.println("No se encontró ningún alumno con ese expediente."); */
 		
+		// El método .remove() intenta eliminar la entrada asociada a la clave expedienteBorrar del Map
+		
 		if(alumnos.remove(expedienteBorrar)!=null) {
+			//Si el expediente existía el método devuelve el objeto AlumnoEj29 eliminado
 			System.out.println("Alumno borrado correctamente.");
 		}else {
 			System.out.println("No se encontró ningún alumno con ese expediente.");
