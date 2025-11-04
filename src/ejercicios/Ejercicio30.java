@@ -263,7 +263,7 @@ public class Ejercicio30 {
 		//Sino hay ninguno evita la división entre 0 y establece 0.0
 		double media = (alumnosConNota>0)?sumaNotas/alumnosConNota:0.0;
 		
-		System.out.println("\n📊 ESTADÍSTICAS:");
+		System.out.println("ESTADÍSTICAS:");
         System.out.println("Suspensos: " + suspensos);
         System.out.println("Aprobados: " + aprobados);
         System.out.printf("Nota media: %.2f%n", media);
